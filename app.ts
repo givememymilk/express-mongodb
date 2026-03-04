@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 
 import express from 'express';
+import type { ErrorRequestHandler, Request, Response, NextFunction } from 'express';
 
 const app = express();
 
@@ -19,13 +20,17 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 app.use(cors());
 app.use(body_parser.json());
-app.use(body_parser.urlencoded({extended: false}));
+app.use(body_parser.urlencoded({ extended: false }));
 
 app.use('/user', user_router);
 
+function errorHandler(err: ErrorRequestHandler, req: Request, res: Response, next: NextFunction) {
+    res.status(500).json({err})
+}
+
 const port = 3000;
 
-db.once('open', function() {
+db.once('open', function () {
     console.log('Connected!');
     app.listen(port, () => {
         console.log('Server is up and running on port number ' + port);
