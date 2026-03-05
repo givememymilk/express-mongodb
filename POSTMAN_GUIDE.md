@@ -23,7 +23,7 @@ The `.env` file already has `JWT_SECRET` configured. You can change it to a more
   ```json
   {
     "name": "V1",
-    "email": "JonUltrakill@gmail.com",
+    "email": "JonUltrakill@example.com",
     "password": "ULTRAKILLMUSTDIE"
   }
   ```
