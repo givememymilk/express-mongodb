@@ -1,5 +1,18 @@
 import User from '../models/users.ts';
 import bcrypt from 'bcryptjs';
+import * as jwt_services from './jwt.ts';
+
+export async function check_role(issuer: any) {
+    const existingUser: any = await User.findOne({ _id: issuer.userId });
+
+    if (!existingUser) {
+        throw new Error('User not found');
+    }
+
+    if (existingUser.role !== "admin") {
+        throw new Error('You are not authorized');
+    }
+}
 
 export async function user_signup(name: string, email: string, password: string) {
     if (!name || !email || !password) {
@@ -28,8 +41,7 @@ export async function user_signup(name: string, email: string, password: string)
         user: {
             id: savedUser._id,
             name: savedUser.name,
-            email: savedUser.email,
-            role: "user",
+            email: savedUser.email
         },
     };
 }

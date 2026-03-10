@@ -1,7 +1,5 @@
 import type { Request, Response, NextFunction } from 'express';
 
-import User from '../models/users.ts';
-
 import * as user_services from '../services/users.ts';
 import * as jwt_services from '../services/jwt.ts';
 
@@ -66,15 +64,7 @@ export async function user_update(req: any, res: Response, next: NextFunction) {
     const auth_header: any = req.headers.authorization;
 
     const issuer = jwt_services.verify_token(auth_header);
-    const existingUser = await User.findOne({ _id: issuer.userId });
-
-    if (!existingUser) {
-        throw new Error('User not found');
-    }
-
-    if (existingUser.role !== "admin") {
-        throw new Error('You are not authorized to update user');
-    }
+    await user_services.check_role(issuer);
 
     try {
         const updateData = { ...req.body };
@@ -96,15 +86,8 @@ export async function user_delete(req: any, res: Response, next: NextFunction) {
     const auth_header: any = req.headers.authorization;
 
     const issuer = jwt_services.verify_token(auth_header);
-    const existingUser = await User.findOne({ _id: issuer.userId });
+    await user_services.check_role(issuer);
 
-    if (!existingUser) {
-        throw new Error('User not found');
-    }
-
-    if (existingUser.role !== "admin") {
-        throw new Error('You are not authorized to delete user');
-    }
     try {
         const user = await user_services.user_delete(req.params.id);
         res.json({ message: 'User deleted successfully' });
