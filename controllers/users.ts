@@ -15,8 +15,8 @@ export async function test(req: Request, res: Response, next: NextFunction) {
 // SIGNUP - Register a new user
 export async function user_signup(req: any, res: any, next: any) {
     try {
-        const { name, email, password } = req.body;
-        const savedUser = await user_services.user_signup(name, email, password);
+        const { name, email, password, role } = req.body;
+        const savedUser = await user_services.user_signup(name, email, password, role);
 
         res.status(201).json({
             message: 'User registered successfully',
@@ -33,11 +33,11 @@ export async function user_login(req: Request, res: Response, next: NextFunction
         const { email, password } = req.body;
         const user = await user_services.user_login(email, password);
 
-        const token = jwt_services.sign({ userId: user._id, email: user.email }, '14d');
+        const jwt_token = jwt_services.sign({ userId: user._id, email: user.email }, '14d');
 
         res.json({
             message: 'Successfully logged in',
-            token,
+            jwt_token: jwt_token,
             user: {
                 id: user._id,
                 name: user.name,

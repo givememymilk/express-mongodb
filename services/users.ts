@@ -14,9 +14,13 @@ export async function check_role(issuer: any) {
     }
 }
 
-export async function user_signup(name: string, email: string, password: string) {
+export async function user_signup(name: string, email: string, password: string, role: string) {
     if (!name || !email || !password) {
-        throw new Error('Name, email, and password are required');
+        throw new Error('Name, email, password, and role are required');
+    }
+
+    if (!role) {
+        role = 'user';
     }
 
     // Check if user already exists
@@ -32,17 +36,16 @@ export async function user_signup(name: string, email: string, password: string)
         name,
         email,
         password: hashedPassword,
+        role: role,
     });
 
     const savedUser = await user.save();
 
     return {
-        message: 'User registered successfully',
-        user: {
             id: savedUser._id,
             name: savedUser.name,
-            email: savedUser.email
-        },
+            email: savedUser.email,
+            role: savedUser.role,
     };
 }
 
