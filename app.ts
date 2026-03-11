@@ -1,4 +1,5 @@
 import user_router from './routes/users.ts';
+import passman_router from './routes/passman.ts';
 import body_parser from 'body-parser';
 import mongoose from 'mongoose';
 import cors from 'cors';
@@ -23,10 +24,7 @@ app.use(body_parser.json());
 app.use(body_parser.urlencoded({ extended: false }));
 
 app.use('/user', user_router);
-
-function errorHandler(err: ErrorRequestHandler, req: Request, res: Response, next: NextFunction) {
-    res.status(500).json({err})
-}
+app.use('/passman', passman_router);
 
 const port = 3000;
 
